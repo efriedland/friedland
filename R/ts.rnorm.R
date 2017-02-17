@@ -1,4 +1,4 @@
-function (n, mean = 0, sd = 1, initial, allownegatives = TRUE) {
+ts.rnorm <- function (n, mean = 0, sd = 1, initial, allownegatives = TRUE) {
   now <- as.POSIXlt(Sys.time())
   r <- initial + cumsum(rnorm(n, mean, sd))
   if(!allownegatives) { r[r < 0] <- 0 }
