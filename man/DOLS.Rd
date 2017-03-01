@@ -2,9 +2,13 @@
 \alias{DOLS}
 \title{ Dynamic Ordinary Least Squares }
 \description{ A quick way to investigate the long run relationship of cointegrating variables using the procedure described by Stock and Watson (1994). Helps determine what the value of the response variables is after it has had enough time to fully adjust to the independent variable. 
+             
 The function creates the formula format for the DOLS equation from the cointegrating relationship. Where the cointegrating relationship is \code{Y ~ X1 + X2} the DOLS equation is \code{Y ~ 1 + X1 + X2 + L(diff(X1), -k:k) + L(diff(X2), -k:k)}, with k = the number of leads/lags.
+             
 It then determines a maximum lead/lag number based of off the number of observations using an ad hoc method and runs the model ad the varying lead/lag sizes, keeping the observation start and end dates restricted to the strictest range. The final number of leads/lags to be chosen is selected by choosing the smallest schwarz bayesian information criterion value (SBC/SBIC/SIC).
-It also calculates the robust standard errors using Newey West with assistance of the lmtest and sandwhich packages. 
+
+It also calculates the robust standard errors using Newey West with assistance of the lmtest and sandwhich packages.
+} 
 \usage{ DOLS(coint.formula, data) }
 \arguments{
   \item{coint.fomula}{ A symbolic representation of the formula that will be built into the DOLS long-run equation. }
