@@ -1,4 +1,4 @@
-DOLS <-
+DOLSprocess <-
 function(coint.formula, data) {
   stopifnot(is.ts(data))
   ff <- coint.formula
