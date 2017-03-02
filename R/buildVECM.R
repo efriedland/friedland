@@ -7,7 +7,11 @@ function(coint.formula, data, stationary.vars = NULL){
   y <- DOLS$model[,1]
   # construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
   og.Xvars <- which(variable.names(DOLS) %in% DOLS.list$data.names)
-  yhat <- rowSums(sweep(DOLS$model[,og.Xvars], 2, DOLS.HAC[og.Xvars,"Estimate"], `*`))
+  if(is.null(dim(DOLS$model[,og.Xvars]))) { # if there is only 1 nonstationary independent variable
+    yhat <- DOLS$model[,og.Xvars] * DOLS.HAC[og.Xvars,"Estimate"]
+  } else { # if there are more than 1
+    yhat <- rowSums(sweep(DOLS$model[,og.Xvars], 2, DOLS.HAC[og.Xvars,"Estimate"], `*`))
+  }
   names(yhat) <- NULL
   yhat.ts <- ts(yhat, start = start(DOLS), end = end(DOLS), frequency = DOLS$frequency)
   # Decompose Error so we can test for asymmetry later
