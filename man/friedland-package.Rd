@@ -25,7 +25,7 @@ Maintainer: \packageMaintainer{friedland}
 }
 \keyword{ package }
 \seealso{ \code{\link{adf}} \code{\link{UnitRoot}} \code{\link{Asymmetry}} \code{\link{NhemShem}} \code{\link{MacKinnon}} \code{\link{aic}} \code{\link{gatelyPriceAsymm}} }
-\Walkthrough{
+\walkthrough{
   \code{
   ## remove.packages("friedland") # may be needed for reinstalling, may have to reopen Rstudio
 
