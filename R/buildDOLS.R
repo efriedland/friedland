@@ -1,4 +1,4 @@
-DOLSprocess <-
+buildDOLS <-
 function(coint.formula, data) {
   stopifnot(is.ts(data))
   ff <- coint.formula
@@ -32,7 +32,7 @@ function(coint.formula, data) {
        call = ff.k.char, # the formula called in the final model
        selection = selection, # BIC results
        leadslags = k, # the selected number of leads/lags
-       DOLS.k = DOLS.k, # the final model
-       DOLS.k.HAC = lmtest::coeftest(DOLS.k, vcov = sandwich::NeweyWest(DOLS.k, lag = k)) # Implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators
+       model = DOLS.k, # the final model
+       robusterrors = lmtest::coeftest(DOLS.k, vcov = sandwich::NeweyWest(DOLS.k, lag = k)) # Implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators
        )
 }
