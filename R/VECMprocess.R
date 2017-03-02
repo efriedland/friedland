@@ -1,7 +1,7 @@
-VECM <- 
+VECMprocess <- 
 function(coint.formula, data, stationary.vars = NULL){
   stopifnot(is.ts(data))
-  DOLS.list <- DOLS(coint.formula, data)
+  DOLS.list <- DOLSprocess(coint.formula, data)
   DOLS.k <- DOLS.list$DOLS.k
   DOLS.k.HAC <- DOLS.list$DOLS.k.HAC
   y <- DOLS.k$model[,1]
