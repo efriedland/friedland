@@ -1,32 +1,32 @@
-VECMprocess <- 
+buildVECM <- 
 function(coint.formula, data, stationary.vars = NULL){
   stopifnot(is.ts(data))
-  DOLS.list <- DOLSprocess(coint.formula, data)
-  DOLS.k <- DOLS.list$DOLS.k
-  DOLS.k.HAC <- DOLS.list$DOLS.k.HAC
+  DOLS.list <- buildDOLS(coint.formula, data)
+  DOLS <- DOLS.list$model
+  DOLS.HAC <- DOLS.list$robusterrors
   y <- DOLS.k$model[,1]
   # construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
-  og.Xvars <- which(variable.names(DOLS.k) %in% DOLS.list$data.names)
-  yhat <- rowSums(sweep(DOLS.k$model[,og.Xvars], 2, DOLS.k.HAC[og.Xvars,"Estimate"], `*`))
+  og.Xvars <- which(variable.names(DOLS) %in% DOLS.list$data.names)
+  yhat <- rowSums(sweep(DOLS$model[,og.Xvars], 2, DOLS.HAC[og.Xvars,"Estimate"], `*`))
   names(yhat) <- NULL
-  yhat.ts <- ts(yhat, start = start(DOLS.k), end = end(DOLS.k), frequency = DOLS.k$frequency)
+  yhat.ts <- ts(yhat, start = start(DOLS), end = end(DOLS), frequency = DOLS$frequency)
   # Decompose Error so we can test for asymmetry later
   Error <- y - yhat.ts
   ErrPos <- (diff(Error)>0) * Error
   ErrNeg <- (diff(Error)<=0) * Error 
   Err <- cbind(Error, ErrPos, ErrNeg)
   # lag selection process...
-  (maxLags <- floor(dim(DOLS.k$model)[1]^(1/3))) # this will be used for k
+  (maxLags <- floor(dim(DOLS$model)[1]^(1/3))) # this will be used for k
   # create the formula dynamically
   if ( !is.null(stationary.vars) ) {
     stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1]," \\+ "))
   }
   
-  ff.maxLags.char <- paste0("diff(",names(DOLS.k$model)[1], ") ~ ", 
-                           ifelse("(Intercept)" %in% variable.names(DOLS.k)," 1 + ", "-1 + "),
+  ff.maxLags.char <- paste0("diff(",names(DOLS$model)[1], ") ~ ", 
+                           ifelse("(Intercept)" %in% variable.names(DOLS)," 1 + ", "-1 + "),
                            "L(ErrPos,1) + L(ErrNeg,1) + ", 
-                           paste0("L(diff(",variable.names(DOLS.k)[og.Xvars],"),1:maxLags)", collapse = " + "),
-                           paste0("+ L(diff(",names(DOLS.k$model)[1],"),1:maxLags)"),
+                           paste0("L(diff(",variable.names(DOLS)[og.Xvars],"),1:maxLags)", collapse = " + "),
+                           paste0("+ L(diff(",names(DOLS$model)[1],"),1:maxLags)"),
                            ifelse(is.null(stationary.vars),
                                   "",
                                   paste0(" + L(",stationary.vars.vec,",1:maxLags)", collapse = ""))
@@ -51,6 +51,6 @@ function(coint.formula, data, stationary.vars = NULL){
        Error = Err, # A 3 column matrix of the Decomposed Error (y-yhat from the DOLS non-nuissance parameters), only the Positive changes in Error, and the Negative changes in Error
        selection = selection, # AIC results
        lags = k, # the selected number of leads/lags
-       VECM.k = VECM.k, # the final model
-       VECM.k.HAC = lmtest::coeftest(VECM.k, vcov = sandwich::NeweyWest(VECM.k, lag = k))) # Implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators
+       model = VECM.k, # the final model
+       robusterrors = lmtest::coeftest(VECM.k, vcov = sandwich::NeweyWest(VECM.k, lag = k))) # Implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators
 }
