@@ -41,9 +41,9 @@ data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
 # Use the buildVECM function which does a number of steps displayed in a list object
 VECM.list <- buildVECM(Pgasoline ~ Pcrude, dat.ts, ~ Utilization + Stocks)
-fit <- VECM.list$VECM.k
+fit <- VECM.list$model
 start(fit)
 end(fit)
 summary(fit) # the standard errors are incorrect, instead use
-VECM.list$VECM.k.HAC
+VECM.list$robusterrors
 }
