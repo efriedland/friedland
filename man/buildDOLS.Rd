@@ -22,8 +22,8 @@ A formula has an implied intercept term. To remove this use either \code{y ~ x -
 \item{call }{returns the dynlm formula used to make the DOLS.}
 \item{selection }{returns a table showing the lags/leads and the SBC, fixed observations, for choosing the number of lags/leads to use.}
 \item{leadslags }{returns the # of lags/leads identified for the model with the smallest SBC.}
-\item{DOLS.k }{returns the final model, where you can also find the dates used.}
-\item{DOLS.k.HAC }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
+\item{model }{returns the final model, where you can also find the dates used.}
+\item{robusterrors }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
 }
 \references{ }
 \author{ }
@@ -36,9 +36,9 @@ data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
 # Use the DOLS function which does a number of steps
 DOLS.list <- buildDOLS(Pgasoline ~ Pcrude, dat.ts)
-fit <- DOLS.list$DOLS.k
+fit <- DOLS.list$model
 start(fit)
 end(fit)
 summary(fit) # the standard errors are incorrect, instead use
-DOLS.list$DOLS.k.HAC
+DOLS.list$robusterrors
 }
