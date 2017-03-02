@@ -4,7 +4,7 @@ function(coint.formula, data, stationary.vars = NULL){
   DOLS.list <- buildDOLS(coint.formula, data)
   DOLS <- DOLS.list$model
   DOLS.HAC <- DOLS.list$robusterrors
-  y <- DOLS.k$model[,1]
+  y <- DOLS$model[,1]
   # construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
   og.Xvars <- which(variable.names(DOLS) %in% DOLS.list$data.names)
   yhat <- rowSums(sweep(DOLS$model[,og.Xvars], 2, DOLS.HAC[og.Xvars,"Estimate"], `*`))
