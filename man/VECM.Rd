@@ -1,6 +1,6 @@
-\name{VECM}
-\alias{VECM}
-\title{ Vector Error Correction Model }
+\name{buildVECM}
+\alias{buildVECM}
+\title{ Building a Vector Error Correction Model }
 \description{ A quick way to investigate the short run relationship of cointegrating variables moving to equilibrium. 
              
 The function creates the formula format for the VECM equation from the cointegrating relationship. 
@@ -12,7 +12,7 @@ It then determines a maximum lag number based of off the number of observations 
 
 It also calculates the robust standard errors using Newey West with assistance of the lmtest and sandwhich packages. 
 }
-\usage{ VECM(coint.formula, data,  stationary.vars = NULL) }
+\usage{ buildVECM(coint.formula, data,  stationary.vars = NULL) }
 \arguments{
   \item{coint.fomula}{ A symbolic representation of the formula that will be built into the VECM short-term equation. }
   \item{data}{ The data frame containing the variables to be called by the formula. }
@@ -27,23 +27,23 @@ A formula has an implied intercept term. To remove this use either \code{y ~ x -
 \item{Error }{returns a 3 column matrix of the decomposed Error (y-yhat from the DOLS non-nuissance parameters), only the Positive changes in Error, and the Negative changes in Error.}
 \item{selection }{returns a table showing the lags and the AIC, fixed observations, for choosing the number of lags to use.}
 \item{lags }{returns the # of lags identified for the model with the smallest AIC.}
-\item{VECM.k }{returns the final model, where you can also find the dates used.}
-\item{VECM.k.HAC }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
+\item{model }{returns the final model, where you can also find the dates used.}
+\item{robusterrors }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
 }
 \references{ }
 \author{ }
 \note{}
 \seealso{
-\code{\link{DOLS}}
+\code{\link{buildDOLS}}
 }
 \examples{
 data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
-# Use the DOLS function which does a number of steps
-VECmodel <- VECM(Pgasoline ~ Pcrude, dat.ts, ~ Utilization + Stocks)
-fit <- VECmodel$VECM.k
+# Use the buildVECM function which does a number of steps displayed in a list object
+VECM.list <- buildVECM(Pgasoline ~ Pcrude, dat.ts, ~ Utilization + Stocks)
+fit <- VECM.list$VECM.k
 start(fit)
 end(fit)
 summary(fit) # the standard errors are incorrect, instead use
-VECmodel$VECM.k.HAC
+VECM.list$VECM.k.HAC
 }
