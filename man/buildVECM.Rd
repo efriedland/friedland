@@ -30,11 +30,8 @@ A formula has an implied intercept term. To remove this use either \code{y ~ x -
 \item{model }{returns the final model, where you can also find the dates used.}
 \item{robusterrors }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
 }
-\references{ }
-\author{ }
-\note{}
 \seealso{
-\code{\link{buildDOLS}}
+\code{\link{buildDOLS}}, \code{\link{aic}}
 }
 \examples{
 data("Asymmetry")
