@@ -1,7 +1,7 @@
 Package: friedland
 Type: Package
 Title: Making Functions Do Your Econometrics For You
-Version: 0.9
+Version: 1.0.1
 Date: 2017-03-2
 Author: Evan Friedland
 Maintainer: Evan Friedland <evan.friedland@gmail.com>
