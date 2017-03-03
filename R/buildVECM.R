@@ -4,32 +4,37 @@ function(coint.formula, data, stationary.vars = NULL){
   DOLS.list <- buildDOLS(coint.formula, data)
   DOLS <- DOLS.list$model
   DOLS.HAC <- DOLS.list$robusterrors
-  y <- DOLS$model[,1]
+  # save the dependent variables as y
+  all.names <- attr(attr(DOLS$terms,"factors"),"dimnames")
+  y.vars <- which(DOLS.list$data.names %in% all.names[[1]][!(all.names[[1]] %in% all.names[[2]])])
+  y <- data[, 1]
+  # save the independent variables and multiply them by DOLS coefficients
+  og.Xvars <- which(colnames(data) %in% variable.names(DOLS)) # variables placement in data
+  dynlm.Xvars <- which(names(DOLS.HAC[,"Estimate"]) %in% colnames(data[,og.Xvars])) # placement in model
   # construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
-  og.Xvars <- which(variable.names(DOLS) %in% DOLS.list$data.names)
-  if(is.null(dim(DOLS$model[,og.Xvars]))) { # if there is only 1 nonstationary independent variable
-    yhat <- DOLS$model[,og.Xvars] * DOLS.HAC[og.Xvars,"Estimate"]
-  } else { # if there are more than 1
-    yhat <- rowSums(sweep(DOLS$model[,og.Xvars], 2, DOLS.HAC[og.Xvars,"Estimate"], `*`))
+ if (is.null(dim(DOLS$model[, dynlm.Xvars]))) {
+    yhat <- data[, og.Xvars] * DOLS.HAC[dynlm.Xvars, "Estimate"] + DOLS.HAC["(Intercept)", "Estimate"]
+  } else {
+    yhat <- rowSums(sweep(data[, og.Xvars], 2, DOLS.HAC[dynlm.Xvars, "Estimate"], `*`)) + DOLS.HAC["(Intercept)", "Estimate"]
   }
   names(yhat) <- NULL
-  yhat.ts <- ts(yhat, start = start(DOLS), end = end(DOLS), frequency = DOLS$frequency)
+  yhat.ts <- ts(yhat, start = start(data[, og.Xvars]), end = end(data[, og.Xvars]), 
+                frequency = frequency(data[, og.Xvars])) # removed DOLS$frequency
   # Decompose Error so we can test for asymmetry later
   Error <- y - yhat.ts
-  ErrPos <- (diff(Error)>0) * Error
-  ErrNeg <- (diff(Error)<=0) * Error 
+  ErrPos <- (diff(y)>0) * Error
+  ErrNeg <- (diff(y)<=0) * Error 
   Err <- cbind(Error, ErrPos, ErrNeg)
   # lag selection process...
-  (maxLags <- floor(dim(DOLS$model)[1]^(1/3))) # this will be used for k
+  maxLags <- floor(dim(DOLS$model)[1]^(1/3)) # this will be used for k
   # create the formula dynamically
   if ( !is.null(stationary.vars) ) {
     stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1]," \\+ "))
   }
-  
   ff.maxLags.char <- paste0("diff(",names(DOLS$model)[1], ") ~ ", 
                            ifelse("(Intercept)" %in% variable.names(DOLS)," 1 + ", "-1 + "),
                            "L(ErrPos,1) + L(ErrNeg,1) + ", 
-                           paste0("L(diff(",variable.names(DOLS)[og.Xvars],"),1:maxLags)", collapse = " + "),
+                           paste0("L(diff(",variable.names(DOLS)[dynlm.Xvars],"),1:maxLags)", collapse = " + "),
                            paste0("+ L(diff(",names(DOLS$model)[1],"),1:maxLags)"),
                            ifelse(is.null(stationary.vars),
                                   "",
