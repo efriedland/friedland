@@ -16,11 +16,11 @@ aic() is to be used when comparing lags. bic() is to be used when comparing lags
 \examples{
 ## The functions are currently defined as
 aic <- function(model){
-  n <- df.residual(model) + length(variable.names(fit$model))
-  log(sum(resid(model) ^ 2) / n) + (length(variable.names(fit$model)) / n) * 2
+  n <- df.residual(model) + length(variable.names(model))
+  log(sum(resid(model) ^ 2) / n) + (length(variable.names(model)) / n) * 2
 } 
 bic <- function(model){
-    n <- df.residual(model) + length(variable.names(fit$model))
-    log(sum(resid(model) ^ 2) / n) + length(variable.names(fit$model)) * log(n) / n
+    n <- df.residual(model) + length(variable.names(model))
+    log(sum(resid(model) ^ 2) / n) + length(variable.names(model)) * log(n) / n
   }
 }
