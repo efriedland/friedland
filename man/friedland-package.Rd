@@ -14,7 +14,7 @@ Maintainer: \packageMaintainer{friedland}
 }
 \keyword{ package }
 \seealso{ \code{\link{adf}} \code{\link{UnitRoot}} \code{\link{Asymmetry}} \code{\link{NhemShem}} \code{\link{MacKinnon}} \code{\link{aic}} \code{\link{gatelyPriceAsymm}} }
-\section{Walkthrough}
+\examples{
   \code{
   ## load package ##
   # install.packages("devtools")
