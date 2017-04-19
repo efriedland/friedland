@@ -11,4 +11,4 @@ Description: A repository of the functions and datasets I use. Many of the
     while the methodologies are attributable to my classes with Professor 
     Robert Kaufmann at Boston University. 
 License: GPL-2
-Depends: graphics, grDevices, stats, utils, cars, zoo, dynlm, lmtest, sandwich
+Depends: graphics, grDevices, stats, utils, car, zoo, dynlm, lmtest, sandwich
