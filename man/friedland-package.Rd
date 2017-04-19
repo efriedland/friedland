@@ -17,10 +17,11 @@ Maintainer: \packageMaintainer{friedland}
 \examples{
   \code{
   ## load package ##
-  # install.packages("devtools")
-  # devtools::install_github("efriedland/friedland")
-  # library(friedland)
-  # ?friedland
+    #update.packages(checkBuilt = TRUE)
+    #install.packages("remotes")
+    #remotes::install_github("efriedland/friedland")
+    #library(friedland)
+    #?friedland
 
   ## load data ##
   data(Asymmetry) # dataset
