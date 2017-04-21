@@ -20,9 +20,8 @@
 \details{
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
-\source{ MacKinnon (1994), \url{ http://www.google.com } ~~ reference to a publication or URL from which the data were obtained
-}
-\references{ MacKinnon (1994), \url{ http://www.google.com } }
+\source{ MacKinnon, J. G. (1994), “Approximate asymptotic distribution functions for unitroot and cointegration tests,” Journal of Business and Economic Statistics, 12, 167–176.}
+\references{ Might be out of date. Please visit: \url{ http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1227.pdf }}
 \examples{
 data(MacKinnon)
 ## maybe str(MacKinnon)
