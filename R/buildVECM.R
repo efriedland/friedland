@@ -29,7 +29,7 @@ buildVECM <-
     ff.maxLags.char <- paste0("diff(",names(DOLS$model)[1], ") ~ ", 
                               ifelse("(Intercept)" %in% variable.names(DOLS)," 1 + ", "-1 + "),
                               ifelse(SplitError, "L(ErrPos,1) + L(ErrNeg,1) + ", "L(Error,1) + "),
-                              paste0("L(diff(",variable.names(DOLS)[dynlm.Xvars],"),1:maxLags)", collapse = " + "),
+                              paste0("L(diff(",og.Xvars,"),1:maxLags)", collapse = " + "),
                               paste0("+ L(diff(",names(DOLS$model)[1],"),1:maxLags)"),
                               ifelse(is.null(stationary.vars),
                                      "",
