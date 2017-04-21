@@ -17,6 +17,7 @@ It also calculates the robust standard errors using Newey West with assistance o
   \item{coint.fomula}{ A symbolic representation of the formula that will be built into the VECM short-term equation. }
   \item{data}{ The data frame containing the variables to be called by the formula. }
   \item{stationary.vars}{ A continuation of the formula consisting of stationary variables within data. Must be written with a leading "~" in the format of "~ Z1" to work. }
+  \item{SplitError}{ Default is FALSE. If TRUE will include a positive Error and a negative Error term in the model to highlight asymmetries. }
 }
 \details{ 
 A formula has an implied intercept term. To remove this use either \code{y ~ x - 1} or \code{y ~ 0 + x}.
@@ -37,7 +38,7 @@ A formula has an implied intercept term. To remove this use either \code{y ~ x -
 data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
 # Use the buildVECM function which does a number of steps displayed in a list object
-VECM.list <- buildVECM(Pgasoline ~ Pcrude, dat.ts, ~ Utilization + Stocks)
+VECM.list <- buildVECM(Pgasoline ~ Pcrude, dat.ts, ~ Utilization + Stocks, SplitError = TRUE)
 fit <- VECM.list$model
 start(fit)
 end(fit)
