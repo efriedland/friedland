@@ -20,7 +20,8 @@
 \details{
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
-\source{ MacKinnon, J. G. (1994), “Approximate asymptotic distribution functions for unitroot and cointegration tests,” Journal of Business and Economic Statistics, 12, 167–176.}
+\source{ MacKinnon, J. G. (1994), “Approximate asymptotic distribution functions for unitroot and cointegration tests,” Journal of Business and Economic Statistics, 12, 167–176.
+  \url{http://qed.econ.queensu.ca/working_papers/papers/qed_wp_861.pdf} }
 \references{ Might be out of date. Please visit: \url{ http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1227.pdf }}
 \examples{
 data(MacKinnon)
