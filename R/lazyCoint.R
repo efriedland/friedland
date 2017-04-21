@@ -15,7 +15,7 @@ lazyCoint <-
     vars <- possibilities[[i]]
     Formula <- formula(paste(Y, "~", paste(vars, collapse = " + ")))
     mu <- residuals(dynlm(Formula, data))
-    Root <- UnitRoot(mu, k = n, trend = F, cointvariables = 1 + length(vars))
+    Root <- UnitRoot(mu, k = n, trend = F, cointvariables = min(1 + length(vars),6))
     MuMaybe[i,2] <- round(Root$significance,6)
     MuMaybe[i,3] <- Root$result
     cat(vars,"\n")
