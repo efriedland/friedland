@@ -21,13 +21,13 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
     maxLL.bic <- which.min(DOLS.bic)
     # no need to reestimate, speed optimized here...
     if(maxLL != maxLL.bic){
-      output$k <- which.min(maxLL.bic)
-      DOLS.k <- dynlm(formula(gsub("maxLL", "maxLL.bic", ff.maxLL)), data = data)
-    } else {
       output$k <- maxLL.bic
-      DOLS.k <- DOLS.maxLL
+      DOLS.k <- dynlm(formula(gsub("maxLL", "maxLL.bic", ff.maxLL)), data = data)
+    } else { # maxLL == maxLL.bic
+      output$k <- maxLL
+      DOLS.k <- DOLS.maxLL # no need to re-estimate
     }
-  } else {
+  } else { # if user did enter a fixed number
     output$k <- maxLL
     DOLS.k <- DOLS.maxLL
   }
