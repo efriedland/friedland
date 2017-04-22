@@ -8,16 +8,14 @@ buildVECM <-
     # save the dependent variables as y
     all.names <- attr(attr(DOLS$terms,"factors"),"dimnames")
     y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
-    #y.vars <- which(DOLS.list$data.names %in% y.names)
     y <- data[, y.names] # not y <- DOLS$model[,y.names] as we don't want to start with a limited number of observations from DOLS
     # save the independent variables and multiply them by DOLS coefficients
-    og.Xvars <- variable.names(DOLS)[variable.names(DOLS) %in% colnames(data)]
-    X <- data[,og.Xvars] 
-    
     # to construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
-    yhat <- DOLS$coefficients["(Intercept)", "Estimate"] + X %*% DOLS$coefficients[og.Xvars , "Estimate"]
-    names(yhat) <- NULL
-    yhat.ts <- ts(yhat, start = start(X), end = end(X), frequency = frequency(X))
+    x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
+    ff <- coint.formula
+    X <- model.matrix(ff, data)
+    yhat <- X %*% DOLS$coefficients[1:ncol(X), "Estimate"]
+    yhat.ts <- ts(yhat, start = start(data), end = end(data), frequency = frequency(data))
     # Decompose Error so we can test for asymmetry later
     Error <- y - yhat.ts
     ErrPos <- (diff(y)>0) * Error
@@ -27,10 +25,10 @@ buildVECM <-
     if (!is.null(stationary.vars)) {
       stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1], " \\+ "))
     }
-    ff.LHS <- paste0("diff(", names(DOLS$model)[1],")")
-    ff.RHS <- paste(c(ifelse("(Intercept)" %in% variable.names(DOLS), "1", "-1"),
+    ff.LHS <- paste0("diff(", y.names,")")
+    ff.RHS <- paste(c(ifelse("(Intercept)" %in% colnames(X), "1", "-1"),
                       ifelse(SplitError, "L(ErrorPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"),
-                      paste0("L(diff(", og.Xvars, "), 1:maxLags)", collapse = " + "),
+                      paste0("L(diff(", x.names, "), 1:maxLags)", collapse = " + "),
                       paste0("L(", ff.LHS, ", 1:maxLags)"),
                       ifelse(is.null(stationary.vars), "", paste0("L(", stationary.vars.vec, ", 1:maxLags)", collapse = ""))), collapse = " + ")
     ff.maxLags <- paste(ff.LHS, "~", ff.RHS)
