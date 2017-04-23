@@ -4,12 +4,13 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
   stopifnot(is.null(fixedk)|is.numeric(fixedk))
   output <- list(data.names = colnames(data))
   ff <- coint.formula
-  input.vars <- model.frame(formula = ff, data = data)
-  RHS <- model.matrix(object = ff, data = input.vars) # just to create the intercept value...if it's there...
-  ff.LHS <- colnames(input.vars)[1]
-  ff.RHS <- paste(c(ifelse("(Intercept)" %in% colnames(RHS), "1", "-1"), # constant
-                    colnames(input.vars[-1]), # input variables
-                    paste0("L(diff(", colnames(input.vars)[-1], "),-maxLL:maxLL)")),
+  all.names <- attr(attr(terms(ff), "factors"), "dimnames")
+  y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
+  x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
+  ff.LHS <- y.names
+  ff.RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"), # constant
+                    colnames(x.names), # input variables
+                    paste0("L(diff(", x.names, "),-maxLL:maxLL)")),
                   collapse=" + ")
   ff.maxLL <- paste(ff.LHS, "~", ff.RHS)
   maxLL <- ifelse(is.null(fixedk), floor(dim(input.vars)[1]^(1/3)/2), fixedk) 
