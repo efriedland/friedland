@@ -19,14 +19,14 @@ buildVECM <-
     Error <- y - yhat.ts
     ErrPos <- (diff(y)>0) * Error
     ErrNeg <- (diff(y)<=0) * Error 
-
+    output$Err <- cbind(Error,ErrPos,ErrNeg)
     # create the formula dynamically
     if (!is.null(stationary.vars)) {
       stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1], " \\+ "))
     }
     ff.LHS <- paste0("diff(", y.names,")")
     ff.RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"), 
-                  ifelse(SplitError, "L(ErrorPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"), 
+                  ifelse(SplitError, "L(ErrPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"), 
                   paste0("L(diff(", x.names, "), 1:maxLags)", collapse = " + "), 
                   paste0("L(", ff.LHS, ", 1:maxLags)", collapse = " + ")), collapse = " + ")
     ff.RHS <- ifelse(is.null(stationary.vars), ff.RHS, paste0(ff.RHS, " + ", paste0("L(", stationary.vars.vec, ", 1:maxLags)", collapse = " + ")))
