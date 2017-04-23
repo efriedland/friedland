@@ -2,7 +2,7 @@ buildVECM <-
   function(coint.formula, data, stationary.vars = NULL, SplitError = FALSE, robusterrors = FALSE, fixedk = NULL){
     stopifnot(is.ts(data))
     stopifnot(is.null(fixedk)|is.numeric(fixedk))
-    output <- list(data.names = colnames(data))
+    output <- list()
     ff <- coint.formula
     # save the dependent variables as y
     all.names <- attr(attr(terms(ff),"factors"),"dimnames")
