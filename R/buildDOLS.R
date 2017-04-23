@@ -2,7 +2,7 @@ buildDOLS <-
 function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
   stopifnot(is.ts(data))
   stopifnot(is.null(fixedk)|is.numeric(fixedk))
-  output <- list(data.names = colnames(data))
+  output <- list()
   ff <- coint.formula
   all.names <- attr(attr(terms(ff), "factors"), "dimnames")
   y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
