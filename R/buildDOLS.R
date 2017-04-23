@@ -13,7 +13,7 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
                     paste0("L(diff(", x.names, "),-maxLL:maxLL)")),
                   collapse=" + ")
   ff.maxLL <- paste(ff.LHS, "~", ff.RHS)
-  maxLL <- ifelse(is.null(fixedk), floor(dim(input.vars)[1]^(1/3)/2), fixedk) 
+  maxLL <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)/2), fixedk) 
   DOLS.maxLL <- dynlm(formula(ff.maxLL), data = data)
   # if user did not enter a fixed number of lags / leads
   if(is.null(fixedk)){
