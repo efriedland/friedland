@@ -3,10 +3,8 @@ buildVECM <-
     stopifnot(is.ts(data))
     stopifnot(is.null(fixedk)|is.numeric(fixedk))
     output <- list(data.names = colnames(data))
-    
-    DOLS <- buildDOLS(coint.formula, data, robusterrors = F, fixedk)$model
     # save the dependent variables as y
-    all.names <- attr(attr(DOLS$terms,"factors"),"dimnames")
+    all.names <- attr(attr(terms(ff),"factors"),"dimnames")
     y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
     y <- data[, y.names] # not y <- DOLS$model[,y.names] as we don't want to start with a limited number of observations from DOLS
     # save the independent variables and multiply them by DOLS coefficients
@@ -14,7 +12,7 @@ buildVECM <-
     x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
     ff <- coint.formula
     X <- model.matrix(ff, data)
-    yhat <- X %*% DOLS$coefficients[1:ncol(X), "Estimate"]
+    yhat <- X %*% buildDOLS(coint.formula, data, robusterrors = F, fixedk)$model$coefficients[1:dim(X)[2], "Estimate"]
     yhat.ts <- ts(yhat, start = start(data), end = end(data), frequency = frequency(data))
     # Decompose Error so we can test for asymmetry later
     Error <- y - yhat.ts
@@ -26,13 +24,13 @@ buildVECM <-
       stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1], " \\+ "))
     }
     ff.LHS <- paste0("diff(", y.names,")")
-    ff.RHS <- paste(c(ifelse("(Intercept)" %in% colnames(X), "1", "-1"),
+    ff.RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"),
                       ifelse(SplitError, "L(ErrorPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"),
                       paste0("L(diff(", x.names, "), 1:maxLags)", collapse = " + "),
                       paste0("L(", ff.LHS, ", 1:maxLags)"),
                       ifelse(is.null(stationary.vars), "", paste0("L(", stationary.vars.vec, ", 1:maxLags)", collapse = ""))), collapse = " + ")
     ff.maxLags <- paste(ff.LHS, "~", ff.RHS)
-    maxLags <-  ifelse(is.null(fixedk), floor(dim(DOLS$model)[1]^(1/3)), fixedk)
+    maxLags <-  ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
     VECM.maxLags <- dynlm(as.formula(ff.maxLags), data = data) 
    # if user did not enter a fixed number of lags
     if(is.null(fixedk)){
