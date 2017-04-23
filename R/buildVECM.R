@@ -3,6 +3,7 @@ buildVECM <-
     stopifnot(is.ts(data))
     stopifnot(is.null(fixedk)|is.numeric(fixedk))
     output <- list(data.names = colnames(data))
+    ff <- coint.formula
     # save the dependent variables as y
     all.names <- attr(attr(terms(ff),"factors"),"dimnames")
     y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
