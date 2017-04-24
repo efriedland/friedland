@@ -9,7 +9,7 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
   x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
   ff.LHS <- y.names
   ff.RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"), # constant
-                    colnames(x.names), # input variables
+                    x.names, # input variables
                     paste0("L(diff(", x.names, "),-maxLL:maxLL)")),
                   collapse=" + ")
   ff.maxLL <- paste(ff.LHS, "~", ff.RHS)
