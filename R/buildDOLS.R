@@ -24,16 +24,18 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
     if(maxLL != maxLL.bic){
       output$k <- maxLL.bic
       DOLS.k <- dynlm(formula(gsub("maxLL", "maxLL.bic", ff.maxLL)), data = data)
+      DOLS.k$call <- formula(gsub("maxLL", "maxLL.bic", ff.maxLL))
     } else { # maxLL == maxLL.bic
       output$k <- maxLL
       DOLS.k <- DOLS.maxLL # no need to re-estimate
+      DOLS.k$call <- formula(ff.maxLL)
     }
   } else { # if user did enter a fixed number
     output$k <- maxLL
     DOLS.k <- DOLS.maxLL
+    DOLS.k$call <- formula(ff.maxLL)
   }
   output$model <- DOLS.k
-  output$model$call <- as.formula(gsub("maxLL", "k", ff.maxLL))
   if(robusterrors){
     output$model$coefficients <- unclass(lmtest::coeftest(DOLS.k, vcov = sandwich::NeweyWest(DOLS.k, lag = output$k))) 
   } else {
