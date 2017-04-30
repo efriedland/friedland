@@ -1,7 +1,7 @@
 lazyCoint <-
   function(Y, data, k, ...){
-  n <- ifelse(missing(k), floor(nrow(data)^(1/3)), k) # ad hoc method of obtaining max lags to use
   if(missing(k)) warning("No lags supplied (k). Used ",n," lags by default: floor(nrow(",deparse(substitute(data)),")^(1/3))\n")
+  n <- ifelse(missing(k), floor(nrow(data)^(1/3)), k) # ad hoc method of obtaining max lags to use
   Results <- UnitRoot(data, k = n, ...) # determine nonstationary variables
   i1.vars <- names(which(Results[,"result"] == "I(1)"))
   if(!any(i1.vars == Y))
