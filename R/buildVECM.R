@@ -1,5 +1,5 @@
 buildVECM <- 
-  function(coint.formula, data, stationary.vars = NULL, SplitError = FALSE, robusterrors = FALSE, fixedk = NULL){
+  function(coint.formula, data, stationary.vars = NULL, SplitError = TRUE, robusterrors = FALSE, fixedk = NULL){
     stopifnot(is.ts(data))
     stopifnot(is.null(fixedk)|is.numeric(fixedk))
     output <- list()
