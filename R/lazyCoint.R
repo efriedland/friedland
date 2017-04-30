@@ -1,7 +1,7 @@
 lazyCoint <-
   function(Y, data, ...){
   n <- floor(nrow(data)^(1/3)) # ad hoc method of obtaining max lags to use
-  Results <- UnitRootApply(data, k = n, trend = F, ...) # determine nonstationary variables
+  Results <- UnitRootApply(data, k = n, ...) # determine nonstationary variables
   i1.vars <- names(which(Results[,"result"] == "I(1)"))
   if(!any(i1.vars == Y))
     stop("Your selected Dependent variable (Y) needs to be nonstationary. Please try either ", paste(i1.vars, collapse = " or "))
