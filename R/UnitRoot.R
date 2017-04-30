@@ -6,8 +6,8 @@ function(variable,           # variable
          cointvariables = 1, # number of variables in relationship
          startfrom = 0){
   if(is.null(dim(variable))) {
-    k <- ifelse(missing(k), floor(length(variable)^(1/3)), k) # ad hoc method of obtaining max lags to use
     if(missing(k)) warning("No lags supplied (k). Used ", n, "lags by default: floor(length(",deparse(substitute(variable)),")^(1/3))\n")
+    k <- ifelse(missing(k), floor(length(variable)^(1/3)), k) # ad hoc method of obtaining max lags to use
     M <- matrix(0, ncol=5, nrow = k)
     colnames(M) <- c("Lags", "AIC", "ADF", "#Obs", "Start Date")  
     j <- start(adf(variable, k, drift, trend, startfrom)) 
@@ -96,8 +96,8 @@ function(variable,           # variable
       }
     }
   } else {
+    if(missing(k)) warning("No lags supplied (k). Used ", n, "lags by default: floor(nrow(",deparse(substitute(variable)),")^(1/3))\n")       
     k <- ifelse(missing(k), floor(nrow(variable)^(1/3)), k) # ad hoc method of obtaining max lags to use
-    if(missing(k)) warning("No lags supplied (k). Used ", n, "lags by default: floor(nrow(",deparse(substitute(variable)),")^(1/3))\n")
     t(sapply(lapply(variable, UnitRoot, k = k, drift = drift, trend = trend, 
                     cointvariables = cointvariables, startfrom = startfrom), 
              function(x) x[2:7]))
