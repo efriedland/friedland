@@ -39,7 +39,7 @@ function (coint.formula, data, robusterrors = FALSE, fixedk = NULL){
   if(robusterrors){
     output$model$coefficients <- unclass(lmtest::coeftest(DOLS.k, vcov = sandwich::NeweyWest(DOLS.k, lag = output$k))) 
   } else {
-    output$model$coefficients <- summary(output$model)$coefficients
+    # output$model$coefficients <- summary(output$model)$coefficients # was stupid to do
   }
   output
 }
