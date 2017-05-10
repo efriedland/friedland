@@ -13,7 +13,7 @@ buildVECM <-
     x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
     ff <- coint.formula
     X <- model.matrix(ff, data)
-    yhat <- X %*% buildDOLS(coint.formula, data, robusterrors = F, fixedk)$model$coefficients[1:dim(X)[2], "Estimate"]
+    yhat <- X %*% buildDOLS(coint.formula, data, robusterrors = F, fixedk)$model$coefficients # [1:dim(X)[2], "Estimate"]
     yhat.ts <- ts(yhat, start = start(data), end = end(data), frequency = frequency(data))
     # Decompose Error so we can test for asymmetry later
     Error <- y - yhat.ts
