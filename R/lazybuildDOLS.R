@@ -1,4 +1,5 @@
-lazybuildDOLS <- function(results.coint, dat){
+lazybuildDOLS <- 
+function(results.coint, dat){
   mod.LagsnLeads <- mod.significance <- mod.adj.R2 <- mod.bic <- mod.Start <- mod.End <- mod.Nobs <- list()
   for(i in 1:length(levels(results.coint[,"Formula"]))){
     x <- levels(results.coint[,"Formula"])[i]
