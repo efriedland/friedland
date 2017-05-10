@@ -54,7 +54,7 @@ buildVECM <-
     if(robusterrors){
       output$model$coefficients <- lmtest::coeftest(VECM.k, vcov = sandwich::NeweyWest(VECM.k, lag = output$k))
     } else {
-      output$model$coefficients <- summary(output$model)$coefficients
+      # output$model$coefficients <- summary(output$model)$coefficients
     }
   output
 }
