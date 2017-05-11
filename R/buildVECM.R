@@ -16,6 +16,7 @@ buildVECM <-
     Error <- y - yhat.ts
     ErrPos <- (diff(y)>0) * Error
     ErrNeg <- (diff(y)<=0) * Error 
+    output <- list()
     output$Err <- cbind(Error,ErrPos,ErrNeg)
     # create the formula dynamically
     if (!is.null(stationary.vars)) {
@@ -30,7 +31,6 @@ buildVECM <-
     ff.k <- paste(ff.LHS, "~", ff.RHS)
     k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
     VECM.k <- dynlm(as.formula(ff.k), data = data) 
-    output <- list()
     # Lag Selection method if user did not enter a fixed number
     if(is.null(fixedk)){
       k.aic <- sapply(1:k, function(k) aic(dynlm(as.formula(ff.k), data = data, 
