@@ -12,7 +12,7 @@ buildDOLS <-
                       paste0("L(diff(", x.names, "),-k:k)")), # lagged differences
                     collapse=" + ")
     ff.k <- paste(ff.LHS, "~", ff.RHS)
-    k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
+    k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3))/2, fixedk)
     DOLS.k <- dynlm(formula(ff.k), data = data) # maxlag or fixedk value 
     output <- list()
     # Lag/Lead Selection method if used did not enter a fixed number
