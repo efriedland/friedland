@@ -1,15 +1,11 @@
 buildVECM <- 
   function(coint.formula, data, stationary.vars = NULL, fixedk = NULL, SplitError = TRUE, robusterrors = FALSE, fixedk.DOLS = NULL){
-    
     stopifnot(is.ts(data))
     stopifnot(is.null(fixedk)|is.numeric(fixedk))
-    "warning: fixedk will fix the buildDOLS function used to estimate coefficients for Error = Y - Yhat"
-    
     ff <- coint.formula
     all.names <- attr(attr(terms(ff),"factors"),"dimnames")
     y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
     x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
-    
     y <- data[, y.names] # not y <- DOLS$model[,y.names] as we don't want to start with a limited number of observations from DOLS
     # save the independent variables and multiply them by DOLS coefficients
     # to construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
