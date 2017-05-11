@@ -9,21 +9,21 @@ It then determines a maximum lead/lag number based of off the number of observat
 
 It also calculates the robust standard errors using Newey West with assistance of the lmtest and sandwhich packages.
 } 
-\usage{ buildDOLS(coint.formula, data) }
+\usage{ buildDOLS(coint.formula, data, fixedk = NULL, robusterrors = FALSE) }
 \arguments{
   \item{coint.fomula}{ A symbolic representation of the formula that will be built into the DOLS long-run equation. }
   \item{data}{ The data frame containing the variables to be called by the formula. }
-  \item{robusterrors}{ Will replace the model coefficients table with results from HAC estimator. }
   \item{fixedk}{ The number of lags/leads that the output will have. If is NULL, determines the number of lags through model selection. }
+  \item{robusterrors}{ Will replace the model coefficients table with results from HAC estimator. }
 }
 \details{ 
 A formula has an implied intercept term. To remove this use either \code{y ~ x - 1} or \code{y ~ 0 + x}.
 }
 \value{
 \item{selection}{returns a table showing the lags/leads and the SBC, fixed observations, for choosing the number of lags/leads to use.}
-\item{leadslags}{returns the # of lags/leads identified for the model with the smallest SBC.}
-\item{model }{returns the final vector error correction model.}
-\item{robusterrors }{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
+\item{k}{returns the # of lags/leads identified for the model with the smallest SBC.}
+\item{model}{returns the final vector error correction model.}
+\item{robusterrors}{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
 }
 \seealso{
 \code{\link{buildVECM}}, \code{\link{bic}}
@@ -32,9 +32,11 @@ A formula has an implied intercept term. To remove this use either \code{y ~ x -
 data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
 # Use the DOLS function which does a number of steps
-DOLS.list <- buildDOLS(Pgasoline ~ Pcrude, dat.ts, robusterrors = T)
+DOLS.list <- buildDOLS(Pgasoline ~ Pcrude, dat.ts, robusterrors = TRUE)
+DOLS.list$selection
 fit <- DOLS.list$model
 start(fit)
 end(fit)
-summary(fit) # unfortunately removes the robusterrors if robusterrors was equal to TRUE.
+summary(fit) # no robusterrors
+DOLS.list$robusterrors # robusterrors
 }
