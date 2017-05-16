@@ -1,13 +1,11 @@
 Making Functions Do Your Econometrics For You
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 ============================================
+It is currently being updated to use methods and custom classes. 
 
 Overview
 --------
 
 friedland contains the work flow tools I use regularly for time series econometrics. A repository of the functions and datasets I use. Some inspiration from code from Professor Roger Keener at Illinois (found here http://www.econ.uiuc.edu/~econ508/e-ta.html) while the work flow methodologies are attributable to my classes with Professor Robert Kaufmann at Boston University. 
-It is currently being updated to use methods and custom classes. 
 
 Installation
 ------------
