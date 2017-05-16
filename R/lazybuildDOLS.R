@@ -1,10 +1,10 @@
 lazybuildDOLS <- 
-function(results.coint, dat){
+function(results.coint, dat, fixedk = NULL){
   ff <- levels(results.coint[,"Formula"])
   mod.LagsnLeads <- mod.significance <- mod.adj.R2 <- mod.bic <- mod.Start <- mod.End <- mod.Nobs <- list()
   for(i in 1:length(ff)){
     x <- ff[i]
-    dols <- buildDOLS(as.formula(x), data = dat)
+    dols <- buildDOLS(as.formula(x), data = dat, fixedk = fixedk)
     mod.LagsnLeads[[i]] <- dols$k
     mod.significance[[i]] <- tryCatch({
       coeftest(dols$model, vcov = NeweyWest(dols$model, lag = dols$k))[1:(length(unlist(strsplit(x,"[+]")))+1),"Pr(>|t|)"]
