@@ -1,6 +1,6 @@
 Making Functions Do Your Econometrics For You
 ============================================
-It is currently being updated to use methods and custom classes. 
+Currently being updated to use methods and custom classes. 
 
 Overview
 --------
