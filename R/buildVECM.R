@@ -47,7 +47,7 @@ buildVECM <-
       }
     }
     output$k <- k
-    VECM.k$call <- paste0("dynlm(formula = ",ff.k,", data = ",substitute(data),")")
+    VECM.k$call <- as.call(c(quote(dynlm), formula = formula(gsub(":k", paste0(":",k), ff.k)), data = substitute(data)))
     output$model <- VECM.k
     if(robusterrors){
       output$robusterrors <- lmtest::coeftest(VECM.k, vcov = sandwich::NeweyWest(VECM.k, lag = output$k))
