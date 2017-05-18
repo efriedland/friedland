@@ -31,7 +31,9 @@ buildDOLS <-
       } 
     }
     output$k <- k
-    DOLS.k$call <- paste0("dynlm(formula = ",ff.k,", data = ",substitute(data),")")
+    DOLS.k$call <- as.call(c(quote(dynlm), 
+                             formula = formula(gsub("-k:k", paste0("-",k,":",k), ff.k)), 
+                             data = substitute(data)))                  
     output$model <- DOLS.k
     
     if(robusterrors){
