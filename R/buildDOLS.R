@@ -30,7 +30,7 @@ buildDOLS <-
                                 start(DOLS_k)[1], end(DOLS_k)[1])
       colnames(DOLS_k$selection) <- c("# of lags/leads (k)", deparse(substitute(selection)),"#Obs",
                                       "StartDate", "EndDate")
-     # only re-estimate the model if k_select differs from k to be efficient
+      # only re-estimate the model if k_select differs from k to be efficient
       if(k != which.min(k_select)){
         k <- which.min(k_select)
         DOLS_k <- dynlm(formula(ff_k), data = data)
