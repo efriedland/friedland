@@ -17,7 +17,7 @@ buildDOLS <-
     # if k (the maximum number of lags/leads) was not fixed, use a default value
     k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)/2), fixedk)
     # run the model. If k was fixed, this is the final model:
-    DOLS.k <- dynlm(formula(ff_k), data = data)
+    DOLS_k <- dynlm(formula(ff_k), data = data)
     # If k was not fixed, DOLS_k will beused to keep constant the start and end dates during model selection
     # Lag/Lead Selection method if used did not enter a fixed number
     if(is.null(fixedk)){
