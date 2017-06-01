@@ -1,56 +1,50 @@
 buildVECM <- 
-  function(coint.formula, data, stationary.vars = NULL, fixedk = NULL, SplitError = TRUE, robusterrors = FALSE, fixedk.DOLS = NULL){
-    stopifnot(is.ts(data))
-    stopifnot(is.null(fixedk)|is.numeric(fixedk))
-    ff <- coint.formula
-    all.names <- attr(attr(terms(ff),"factors"),"dimnames")
-    y.names <- all.names[[1]][!(all.names[[1]] %in% all.names[[2]])]
-    x.names <- all.names[[2]][all.names[[2]] %in% colnames(data)]
-    y <- data[, y.names] # not y <- DOLS$model[,y.names] as we don't want to start with a limited number of observations from DOLS
-    # save the independent variables and multiply them by DOLS coefficients
-    # to construct the yhat from the non-lagged variables and coefficients of DOLS (we ignore nuisance parameters)
-    X <- model.matrix(ff, data)
-    yhat <- X %*% buildDOLS(coint.formula, data, fixedk = fixedk.DOLS, robusterrors = F)$model$coefficients[1:dim(X)[2]]
-    yhat.ts <- ts(yhat, start = start(data), end = end(data), frequency = frequency(data))
-    # Decompose Error so we can test for asymmetry later
-    Error <- y - yhat.ts
-    ErrPos <- (diff(y)>0) * Error
-    ErrNeg <- (diff(y)<=0) * Error 
-    output <- list()
-    output$Err <- cbind(Error,ErrPos,ErrNeg)
-    # create the formula dynamically
-    if (!is.null(stationary.vars)) {
-      stationary.vars.vec <- unlist(strsplit(as.character(stationary.vars)[-1], " \\+ "))
+  function (coint_formula, data, stationary_vars = NULL, fixedk = NULL, SplitError = TRUE, 
+            robusterrors = TRUE, fixedk_DOLS = NULL, selection = AIC) 
+{
+  stopifnot(is.ts(data))
+  stopifnot(is.null(fixedk) || is.numeric(fixedk))
+  stopifnot(is.null(fixedk_DOLS) || is.numeric(fixedk_DOLS))
+  ff <- coint_formula
+  all_names <- dimnames(attr(terms(ff), "factors"))
+  y_names <- all_names[[1]][!(all_names[[1]] %in% all_names[[2]])]
+  x_names <- all_names[[2]][all_names[[2]] %in% colnames(data)]
+  y <- data[, y_names]
+  X <- model.matrix(ff, data)
+  yhat <- X %*% buildDOLS(coint_formula, data, fixedk = fixedk_DOLS, robusterrors = F)$coefficients[1:dim(X)[2]]
+  # Decompose Error term
+  Error <- y - ts(yhat, start = start(data), end = end(data), frequency = frequency(data))
+  ErrPos <- (diff(y) > 0) * Error
+  ErrNeg <- (diff(y) <= 0) * Error
+  ff_LHS <- paste0("diff(", y_names, ")")
+  ff_RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"), 
+                    ifelse(SplitError, "L(ErrPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"), 
+                    paste0("L(diff(", x_names, "), 1:k)", collapse = " + "), 
+                    paste0("L(", ff_LHS, ", 1:k)", collapse = " + ")), 
+                  collapse = " + ")
+  ff_RHS <- ifelse(is.null(stationary_vars), 
+                   ff_RHS, 
+                   paste0(ff_RHS, " + ", paste0("L(", unlist(strsplit(as.character(stationary_vars)[-1], " \\+ ")), ", 1:k)", 
+                                                collapse = " + ")))
+  ff_k <- paste(ff_LHS, "~", ff_RHS)
+  k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
+  VECM_k <- dynlm(as.formula(ff_k), data = data)
+  VECM_k$Errors <- cbind(Error, ErrPos, ErrNeg)
+  if (is.null(fixedk)) {
+    k_select <- sapply(1:k, function(k) match.fun(FUN = selection)(dynlm(as.formula(ff_k), data = data, 
+                                                                         start = start(VECM_k), end = end(VECM_k))))
+    if (k != which.min(k_select)) {
+      k <- which.min(k_select)
+      VECM_k <- dynlm(formula(ff_k), data = data)
     }
-    ff.LHS <- paste0("diff(", y.names,")")
-    ff.RHS <- paste(c(ifelse(attr(terms(ff), "intercept") == 1, "1", "-1"), 
-                      ifelse(SplitError, "L(ErrPos, 1) + L(ErrNeg, 1)", "L(Error, 1)"), 
-                      paste0("L(diff(", x.names, "), 1:k)", collapse = " + "), 
-                      paste0("L(", ff.LHS, ", 1:k)", collapse = " + ")), collapse = " + ")
-    ff.RHS <- ifelse(is.null(stationary.vars), ff.RHS, paste0(ff.RHS, " + ", paste0("L(", stationary.vars.vec, ", 1:k)", collapse = " + ")))
-    ff.k <- paste(ff.LHS, "~", ff.RHS)
-    k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
-    VECM.k <- dynlm(as.formula(ff.k), data = data) 
-    # Lag Selection method if user did not enter a fixed number
-    if(is.null(fixedk)){
-      k.aic <- sapply(1:k, function(k) aic(dynlm(as.formula(ff.k), data = data, 
-                                                 start = start(VECM.k), 
-                                                 end = end(VECM.k))))
-      output$selection <- cbind(`# of lags (k)` = 1:k, 
-                                AIC = k.aic,
-                                `#Obs` = VECM.k$df + length(VECM.k$coeff),
-                                StartDate = start(VECM.k)[1],
-                                EndDate = end(VECM.k)[1])
-      if(k != which.min(k.aic)){
-        k <- which.min(k.aic)
-        VECM.k <- dynlm(formula(ff.k), data = data)
-      }
-    }
-    output$k <- k
-    VECM.k$call <- as.call(c(quote(dynlm), formula = formula(gsub(":k", paste0(":",k), ff.k)), data = substitute(data)))
-    output$model <- VECM.k
-    if(robusterrors){
-      output$robusterrors <- lmtest::coeftest(VECM.k, vcov = sandwich::NeweyWest(VECM.k, lag = output$k))
-    }
-    output
+    VECM_k$selection <- cbind(1:k, k_select, VECM_k$df + length(VECM_k$coeff), start(VECM_k)[1], end(VECM_k)[1])
+    colnames(VECM_k$selection) <- c("# of lags (k)", deparse(substitute(selection)), "#Obs", "StartDate", "EndDate")
   }
+  VECM_k$k <- k
+  if(robusterrors) VECM_k$HAC <- lmtest::coeftest(VECM_k, vcov = sandwich::NeweyWest(VECM_k, lag = k))
+  VECM_k$call <- as.call(c(quote(dynlm), 
+                           formula = formula(gsub(":k", paste0(":", k), ff_k)), 
+                           data = substitute(data)))
+  class(VECM_k) <- c("workflow", class(VECM_k))
+  VECM_k
+}
