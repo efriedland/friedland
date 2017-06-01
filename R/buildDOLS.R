@@ -26,23 +26,23 @@ buildDOLS <-
                                                  start = start(DOLS_k), 
                                                  end = end(DOLS_k))))
       # save the selection matrix results inside the model
-      DOLS_k$selection <- cbind(1:k, k_select, DOLS_k$df + length(DOLS_k$coeff), 
-                                start(DOLS_k)[1], end(DOLS_k)[1])
-      colnames(DOLS_k$selection) <- c("# of lags/leads (k)", deparse(substitute(selection)),"#Obs",
-                                      "StartDate", "EndDate")
+      rx <- residuals(DOLS_k)                  
+      modselection <- cbind.data.frame(1:k, k_select, DOLS_k$df + length(DOLS_k$coeff), 
+                                       index2char(index(rx)[1], DOLS_k$frequency), 
+                                       index2char(index(rx)[length(rx)], DOLS_k$frequency))
+      colnames(modselection) <- c("# of lags/leads (k)", deparse(substitute(selection)),"#Obs","StartDate", "EndDate")
       # only re-estimate the model if k_select differs from k to be efficient
       if(k != which.min(k_select)){
         k <- which.min(k_select)
         DOLS_k <- dynlm(formula(ff_k), data = data)
-      } 
+      }
+      DOLS_k$selection <- modselection                   
     }
   DOLS_k$k <- k # save the lag used inside the model
   # save the HAC estimated errors inside the model
   if(robusterrors) DOLS_k$HAC <- lmtest::coeftest(DOLS_k, vcov = sandwich::NeweyWest(DOLS_k, lag = k))
   # rewriting the call function to be a run on its own 
-  DOLS_k$call <- as.call(c(quote(dynlm), 
-                           formula = formula(gsub("-k:k", paste0("-",k,":",k), ff_k)), 
-                           data = substitute(data)))                  
+  DOLS_k$call <- as.call(c(quote(dynlm), formula = formula(gsub("-k:k", paste0("-",k,":",k), ff_k)), data = substitute(data)))                  
   class(DOLS_k) <- c("workflow", class(DOLS_k))
   DOLS_k
 }
