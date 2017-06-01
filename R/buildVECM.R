@@ -33,18 +33,20 @@ buildVECM <-
   if (is.null(fixedk)) {
     k_select <- sapply(1:k, function(k) match.fun(FUN = selection)(dynlm(as.formula(ff_k), data = data, 
                                                                          start = start(VECM_k), end = end(VECM_k))))
-    VECM_k$selection <- cbind(1:k, k_select, VECM_k$df + length(VECM_k$coeff), start(VECM_k)[1], end(VECM_k)[1])
-    colnames(VECM_k$selection) <- c("# of lags (k)", deparse(substitute(selection)), "#Obs", "StartDate", "EndDate")
+    rx <- residuals(VECM_k)
+    modselection <- cbind.data.frame(1:k, k_select, VECM_k$df + length(VECM_k$coeff),                                        
+                          index2char(index(rx)[1], VECM_k$frequency), 
+                          index2char(index(rx)[length(rx)], VECM_k$frequency))
+    colnames(modselection) <- c("# of lags (k)", deparse(substitute(selection)), "#Obs", "StartDate", "EndDate")
     if (k != which.min(k_select)) {
       k <- which.min(k_select)
       VECM_k <- dynlm(formula(ff_k), data = data)
     }
+  VECM_k$selection <- modselection
   }
   VECM_k$k <- k
   if(robusterrors) VECM_k$HAC <- lmtest::coeftest(VECM_k, vcov = sandwich::NeweyWest(VECM_k, lag = k))
-  VECM_k$call <- as.call(c(quote(dynlm), 
-                           formula = formula(gsub(":k", paste0(":", k), ff_k)), 
-                           data = substitute(data)))
+  VECM_k$call <- as.call(c(quote(dynlm), formula = formula(gsub(":k", paste0(":", k), ff_k)), data = substitute(data)))
   class(VECM_k) <- c("workflow", class(VECM_k))
   VECM_k
 }
