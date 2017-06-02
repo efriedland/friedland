@@ -31,7 +31,6 @@ buildVECM <-
   ff_k <- paste(ff_LHS, "~", ff_RHS)
   k <- ifelse(is.null(fixedk), floor(dim(data)[1]^(1/3)), fixedk)
   VECM_k <- dynlm(as.formula(ff_k), data = data)
-  VECM_k$Errors <- cbind(Error, ErrPos, ErrNeg)
   if (is.null(fixedk)) {
     k_select <- sapply(1:k, function(k) match.fun(FUN = selection)(dynlm(as.formula(ff_k), data = data, 
                                                                          start = start(VECM_k), end = end(VECM_k))))
@@ -47,6 +46,7 @@ buildVECM <-
   VECM_k$selection <- modselection
   }
   VECM_k$k <- k
+  VECM_k$Errors <- cbind(Error, ErrPos, ErrNeg)                     
   if(robusterrors) VECM_k$HAC <- lmtest::coeftest(VECM_k, vcov = sandwich::NeweyWest(VECM_k, lag = k))
   VECM_k$call <- as.call(c(quote(dynlm), formula = formula(gsub(":k", paste0(":", k), ff_k)), data = substitute(data)))
   class(VECM_k) <- c("workflow", class(VECM_k))
