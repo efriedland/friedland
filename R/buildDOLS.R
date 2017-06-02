@@ -1,7 +1,7 @@
 buildDOLS <- 
   function (coint_formula, data, fixedk = NULL, robusterrors = TRUE, selection = BIC){
     stopifnot(is.ts(data)) # time series data
-    stopifnot(is.null(fixedk)|is.numeric(fixedk)) # fixed k either is null or is numeric
+    stopifnot(is.null(fixedk)||is.numeric(fixedk)) # fixed k either is null or is numeric
     stopifnot(is.function(selection)) # selection method is a function (should work on a model)
     # Formula Creation
     ff <- coint_formula 
