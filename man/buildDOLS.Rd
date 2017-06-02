@@ -11,32 +11,27 @@ It also calculates the robust standard errors using Newey West with assistance o
 } 
 \usage{ buildDOLS(coint.formula, data, fixedk = NULL, robusterrors = FALSE) }
 \arguments{
-  \item{coint.fomula}{ A symbolic representation of the formula that will be built into the DOLS long-run equation. }
+  \item{coint_fomula}{ A representation of the cointegrating formula that will be built into the DOLS long-run equation. }
   \item{data}{ The data frame containing the variables to be called by the formula. }
-  \item{fixedk}{ The number of lags/leads that the output will have. If is NULL, determines the number of lags through model selection. }
-  \item{robusterrors}{ Will replace the model coefficients table with results from HAC estimator. }
+  \item{fixedk}{ The number of lags/leads that the output will have. If is NULL, determines the number of lags/leads through model selection, starting at a maximum value of \code{floor(nrow(data)^(1/3)/2)}.. }
+  \item{robusterrors}{ The HAC estimator. }
+  \item{selection}{ The funciton used during model selection. Default set to BIC but can match any function that acts on a model object.}
 }
 \details{ 
 A formula has an implied intercept term. To remove this use either \code{y ~ x - 1} or \code{y ~ 0 + x}.
 }
 \value{
-\item{selection}{returns a table showing the lags/leads and the SBC, fixed observations, for choosing the number of lags/leads to use.}
+\item{selection}{returns a table showing the lags/leads and the selection criteria, fixed observations, and start and end dates used for choosing the number of lags/leads to use.}
 \item{k}{returns the # of lags/leads identified for the model with the smallest SBC.}
-\item{model}{returns the final vector error correction model.}
-\item{robusterrors}{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
-}
+\item{HAC}{returns the robust errors implementing the Newey & West (1987, 1994) heteroskedasticity and autocorrelation consistent (HAC) covariance matrix estimators.}
+        }
 \seealso{
 \code{\link{buildVECM}}, \code{\link{bic}}
 }
 \examples{
-data("Asymmetry")
 dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
 # Use the DOLS function which does a number of steps
-DOLS.list <- buildDOLS(Pgasoline ~ Pcrude, dat.ts, robusterrors = TRUE)
-DOLS.list$selection
-fit <- DOLS.list$model
-start(fit)
-end(fit)
-summary(fit) # no robusterrors
-DOLS.list$robusterrors # robusterrors
+dols <- buildDOLS(Pgasoline ~ Pcrude, dat.ts, robusterrors = TRUE)
+dols$selection
+summary(dols) # shows HAC estimated errors in the summary output if robusterrors = TRUE
 }
