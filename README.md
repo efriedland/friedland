@@ -40,7 +40,7 @@ UnitRoot(mu, drift = T, trend = T, cointvariables = 2)
 buildDOLS(Pgasoline ~ Pcrude, dat.ts, robusterrors = T)
 
 # build a Vector Error Correction model
-buildVECM(Pgasoline ~ Pcrude, dat.ts, stationary.vars = ~ Stocks, robusterrors = T, SplitError = T)
+buildVECM(Pgasoline ~ Pcrude, dat.ts, stationary_vars = ~ Stocks, robusterrors = T, SplitError = T)
 
 # speed up the process with the lazier "lazy" functions
 # test for cointegration across all possibilities of independent variable combinations
