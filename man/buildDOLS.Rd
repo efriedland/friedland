@@ -15,7 +15,7 @@ It also calculates the robust standard errors using Newey West with assistance o
   \item{data}{ The data frame containing the variables to be called by the formula. }
   \item{fixedk}{ The number of lags/leads that the output will have. If is NULL, determines the number of lags/leads through model selection, starting at a maximum value of \code{floor(nrow(data)^(1/3)/2)}.. }
   \item{robusterrors}{ The HAC estimator. }
-  \item{selection}{ The funciton used during model selection. Default set to BIC but can match any function that acts on a model object.}
+  \item{selection}{ The function used during model selection. Default set to BIC but can match any function that acts on a model object.}
 }
 \details{ 
 A formula has an implied intercept term. To remove this use either \code{y ~ x - 1} or \code{y ~ 0 + x}.
