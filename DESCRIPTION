@@ -12,3 +12,4 @@ Description: A repository of the functions and datasets I use. Many of the
     Robert Kaufmann at Boston University. 
 License: GPL-2
 Depends: graphics, grDevices, stats, utils, car, zoo, dynlm, lmtest, sandwich
+LazyData: true
