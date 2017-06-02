@@ -1,3 +1,4 @@
+
 buildVECM <- 
   function (coint_formula, data, stationary_vars = NULL, fixedk = NULL, SplitError = TRUE, 
             robusterrors = TRUE, fixedk_DOLS = NULL, selection = AIC) 
@@ -5,6 +6,7 @@ buildVECM <-
   stopifnot(is.ts(data))
   stopifnot(is.null(fixedk) || is.numeric(fixedk))
   stopifnot(is.null(fixedk_DOLS) || is.numeric(fixedk_DOLS))
+  stopifnot(is.function(selection)) # selection method is a function (should work on a model)
   ff <- coint_formula
   all_names <- dimnames(attr(terms(ff), "factors"))
   y_names <- all_names[[1]][!(all_names[[1]] %in% all_names[[2]])]
