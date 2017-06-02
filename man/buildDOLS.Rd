@@ -9,7 +9,7 @@ It then determines a maximum lead/lag number based of off the number of observat
 
 It also calculates the robust standard errors using Newey West with assistance of the lmtest and sandwhich packages.
 } 
-\usage{ buildDOLS(coint.formula, data, fixedk = NULL, robusterrors = FALSE) }
+\usage{ buildDOLS(coint_formula, data, fixedk = NULL, robusterrors = TRUE, selection = BIC) }
 \arguments{
   \item{coint_fomula}{ A representation of the cointegrating formula that will be built into the DOLS long-run equation. }
   \item{data}{ The data frame containing the variables to be called by the formula. }
