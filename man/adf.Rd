@@ -1,7 +1,7 @@
 \name{adf}
 \alias{adf}
 \title{ Augmented Dickey-Fuller Test }
-\description{ The Augmented Dickey-Fuller test is for unit root testing. Remember that the P-Value from traditional summary() of the regression of is often spurious. Uses MacKinnon (1994) Table 3 to determine significance of the ADF test statistic result. }
+\description{ The Augmented Dickey-Fuller test is for unit root testing. Remember that the P-Value from traditional summary() of the regression of is often spurious. Uses MacKinnon (1994) Table 3 "“Approximate asymptotic distribution functions for unitroot and cointegration tests” to determine significance of the ADF test statistic result. }
 \usage{ adf(variable, k = 1, drift = TRUE, trend = TRUE, startfrom = 0, ADFstatOnly = FALSE) }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,6 +41,6 @@ A new paragraph
 }
 \examples{
 GermanInterest.ts <- as.ts(dynlm::M1Germany[,"interest"])
-x <- adf(GermanInterest.ts, k = maxlag, drift = T, trend = F)
+x <- adf(GermanInterest.ts, k = 4, drift = T, trend = T)
 summary(x)
 }
