@@ -25,12 +25,12 @@ library(friedland)
 # "MacKinnon" is the workhouse table for critical values used to assess significance of unit root tests
 # "Asymmetry" is an example dataset containing price of gasoline, crude oil, utilization and stocks 
 # "NhemShem" is an example dataset containing temperature and radiative forcing data across
-# the Northern and Southern Hemisphere
-dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
+# the Northern and Southern Hemispheres
+dat.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12) # converted to a time series object
 
-# identify stationary or nonstationary
-UnitRoot(dat.ts[,"Pgasoline"], drift = T, trend = T) # augmented dickey-fuller testing single variables
-UnitRoot(dat.ts, drift = T, trend = T) # the entire dataset
+# identify if variables are stationary or nonstationary
+UnitRoot(dat.ts[,"Pgasoline"], drift = T, trend = T) # augmented dickey-fuller testing a single variable
+UnitRoot(dat.ts, drift = T, trend = T) # vectorized to accepted the entire dataset
 
 # test for cointegration
 mu <- residuals(dynlm(Pgasoline ~ Pcrude, dat.ts))
