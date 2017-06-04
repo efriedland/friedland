@@ -7,13 +7,13 @@ function(results.coint, dat, fixedk = NULL){
     dols <- buildDOLS(as.formula(x), data = dat, fixedk = fixedk)
     mod.LagsnLeads[[i]] <- dols$k
     mod.significance[[i]] <- tryCatch({
-      coeftest(dols$model, vcov = NeweyWest(dols$model, lag = dols$k))[1:(length(unlist(strsplit(x,"[+]")))+1),"Pr(>|t|)"]
+      coeftest(dols, vcov = NeweyWest(dols, lag = dols$k))[1:(length(unlist(strsplit(x,"[+]")))+1),"Pr(>|t|)"]
     }, error=function(e) return(NA))
-    mod.adj.R2[[i]] <- summary(dols$model)$adj.r.squared
-    mod.Start[[i]] <- as.yearmon(start(dols$model))[1]
-    mod.End[[i]] <- as.yearmon(end(dols$model))[1]
-    mod.Nobs[[i]] <- nrow(dols$model$model)
-    mod.bic[[i]] <- bic(dols$model)
+    mod.adj.R2[[i]] <- summary(dols)$adj.r.squared
+    mod.Start[[i]] <- as.yearmon(start(dols))[1]
+    mod.End[[i]] <- as.yearmon(end(dols))[1]
+    mod.Nobs[[i]] <- nobs(dols)
+    mod.bic[[i]] <- bic(dols)
   }
   Yvar <- strsplit(as.character(results.coint[1,1]), " ~ ")[[1]][1]
   nVar <- colnames(dat)[-which(colnames(dat) == Yvar)]
