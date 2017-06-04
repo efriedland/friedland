@@ -1,5 +1,5 @@
 gatelyPriceAsymm <-
-function(x){
+function(x, prefix = "p"){
   stopifnot(is.ts(x)) # must be time series
   Pmax <- 0 # initialize
   for(i in 1:length(x)){ Pmax[i] <- max(x[1:i]) } # records at every date the historical highest price
@@ -12,5 +12,7 @@ function(x){
   Pmax <- ts(Pmax) ; tsp(Pmax) <- tsp(x) 
   Prec <- ts(Prec) ; tsp(Prec) <- tsp(diff(x))
   Pcut <- ts(Pcut) ; tsp(Pcut) <- tsp(diff(x))
-  list(Pmax = Pmax, Prec = Prec, Pcut = Pcut)
+  out <- ts.union(Pmax, Prec, Pcut)
+  colnames(out) <- paste0(prefix, c("max","rec","cut"))
+  out
 }
