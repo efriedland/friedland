@@ -21,27 +21,20 @@ Used to pick out which variables are stationary and nonstationary.
 \value{
 %%  ~Describe the value returned
 %%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+%%  \item{selection}{Matrix showing the Lags tested from 1:k and the results at each lag}
+%%  \item{Lag }{Which lag was chosen based on AIC score}
+%%  \item{StartDate}{the starting date the regresison was run from}
+%%  \item{AIC}{the criterion function results used to select the best model}
+%%  \item{ADFstatistic}{the t-value of the augmented dickey fuller test's lagged variable.}
+%%  \item{significance}{the calculated critical value using the MacKinnon table. If the ADF statitics is too high or low to be used, this value will be NA.}
+%%  \item{results}{The resulting unit root. "I(1)" implies non stationary and "I(0)" implies stationary}
+%%  \item{reason}{A sentence explanation of the result in the context of the MacKinnon table.}
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{adf}}, \code{\link{aic}}, \code{\link{UnitRootApply}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+Asymmetry.ts <- ts(Asymmetry[,-1], start = c(2003,6), frequency = 12)
+UnitRoot(Asymmetry.ts[,"Pcrude"])
+UnitRoot(Asymmetry.ts)
 }
