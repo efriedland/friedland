@@ -19,16 +19,14 @@ UnitRoot(variable, k, drift = TRUE, trend = TRUE, cointvariables = 1, startfrom 
 Used to pick out which variables are stationary and nonstationary.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{selection}{Matrix showing the Lags tested from 1:k and the results at each lag}
-%%  \item{Lag }{Which lag was chosen based on AIC score}
-%%  \item{StartDate}{the starting date the regresison was run from}
-%%  \item{AIC}{the criterion function results used to select the best model}
-%%  \item{ADFstatistic}{the t-value of the augmented dickey fuller test's lagged variable.}
-%%  \item{significance}{the calculated critical value using the MacKinnon table. If the ADF statitics is too high or low to be used, this value will be NA.}
-%%  \item{results}{The resulting unit root. "I(1)" implies non stationary and "I(0)" implies stationary}
-%%  \item{reason}{A sentence explanation of the result in the context of the MacKinnon table.}
+  \item{selection}{Matrix showing the Lags tested from 1:k and the results at each lag}
+  \item{Lag }{Which lag was chosen based on AIC score}
+  \item{StartDate}{the starting date the regresison was run from}
+  \item{AIC}{the criterion function results used to select the best model}
+  \item{ADFstatistic}{the t-value of the augmented dickey fuller test's lagged variable.}
+  \item{significance}{the calculated critical value using the MacKinnon table. If the ADF statitics is too high or low to be used, this value will be NA.}
+  \item{results}{The resulting unit root. "I(1)" implies non stationary and "I(0)" implies stationary}
+  \item{reason}{A sentence explanation of the result in the context of the MacKinnon table.}
 }
 \seealso{
 \code{\link{adf}}, \code{\link{aic}}, \code{\link{UnitRootApply}}
