@@ -8,7 +8,7 @@ Produces a matrix of 3 variables decomposed from the input time series variable.
   the cumulative positive changes, and the cumulative negative changes. 
 }
 \usage{
-gatelyPriceAsymm(x)
+gatelyPriceAsymm(x, prefix = "P")
 }
 \arguments{
   \item{x}{ The Time Series variable to be decomposed. }
