@@ -13,6 +13,7 @@ Installation
 ``` r
 # The easiest way to get the development version from GitHub is to use remotes:
 install.packages("remotes")
+Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true") # if the loading fails due to outdated dependencies
 remotes::install_github("efriedland/friedland")
 ```
 
